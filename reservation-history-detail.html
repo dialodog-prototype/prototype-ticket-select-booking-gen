@@ -8,12 +8,12 @@
   </head>
   <body>
     <main class="reservation-history-detail app-screen" aria-labelledby="reservation-history-detail-title">
-      <header class="reservation-history-detail__header app-header app-header--with-action">
+      <header class="reservation-history-detail__header app-header">
         <button class="reservation-history-detail__back app-header__button" type="button" data-action="go-back" aria-label="예약 내역으로 돌아가기">
           <img src="assets/icons/iconBack.svg" alt="" />
         </button>
         <h1 class="reservation-history-detail__title app-header__title" id="reservation-history-detail-title">예약 내역 상세</h1>
-        <button class="reservation-history-detail__cancel-all app-header__action app-header__action--danger" type="button" data-action="cancel-all" data-field="cancel-all">전체 취소</button>
+        <span aria-hidden="true"></span>
       </header>
 
       <p class="reservation-history-detail__notice" data-field="cancellation-notice" hidden>24시간 전인 예약이 있어 전체 취소할 수 없습니다.</p>
@@ -37,6 +37,11 @@
         <h2 class="reservation-pet-information__title section-title" id="reservation-pet-information-title">반려견 예약 정보</h2>
         <div class="reservation-pet-information__list" data-field="pet-groups"></div>
       </section>
+
+      <footer class="cancellation-footer">
+        <button class="reservation-history-detail__cancel-all cancellation-footer__button action-button action-button--danger-soft" type="button" data-action="cancel-all" data-field="cancel-all">전체 취소</button>
+        <p class="cancellation-footer__notice">예약 취소는 일정 시작 24시간 전까지 가능합니다.</p>
+      </footer>
 
       <p class="toast reservation-completion-toast" data-field="reservation-completion-toast" role="status" hidden>예약이 완료되었습니다.</p>
     </main>

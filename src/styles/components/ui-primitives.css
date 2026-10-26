@@ -109,7 +109,7 @@
   background: var(--color-text);
   border-radius: var(--radius-3);
   box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
-  font-size: 16px;
+  font-size: var(--font-size-toast, 16px);
   font-weight: 700;
   line-height: 1.45;
   text-align: center;
@@ -150,7 +150,41 @@
   background: var(--color-warning);
 }
 
+.action-button--danger-soft {
+  color: var(--color-warning);
+  background: #ffebef;
+}
+
 .action-button:disabled {
   color: var(--color-text-muted);
   background: #f4f4f4;
+}
+
+.cancellation-footer {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: min(100%, var(--size-screen-max));
+  margin: 0 auto;
+  padding: 16px 24px 24px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.cancellation-footer__button {
+  display: block;
+  width: min(100%, 382px);
+  margin: 0 auto;
+  font-size: var(--font-size-cancellation-button, 16px);
+  font-weight: 600;
+}
+
+.cancellation-footer__notice {
+  margin: 10px 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-cancellation-notice, 13px);
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: right;
 }
