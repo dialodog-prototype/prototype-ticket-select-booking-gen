@@ -1,5 +1,10 @@
 .reservation-history-detail {
-  padding-bottom: 32px;
+  --font-size-page-title: 22px;
+  --font-size-section-title: 20px;
+  --font-size-cancellation-button: 16px;
+  --font-size-cancellation-notice: 13px;
+  --font-size-toast: 14px;
+  padding-bottom: 216px;
 }
 
 .reservation-history-detail__notice {
@@ -8,7 +13,7 @@
   color: var(--color-warning);
   background: var(--color-warning-soft);
   border-radius: var(--radius-3);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.45;
 }
@@ -21,7 +26,7 @@
 .reservation-overview__status {
   margin: 0;
   color: var(--color-primary);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
 }
 
@@ -32,14 +37,14 @@
 .reservation-overview__business-name {
   margin: 28px 0 0;
   color: var(--color-text-secondary);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .reservation-overview__service-type {
   margin: 8px 0 0;
   color: var(--color-text);
-  font-size: 27px;
+  font-size: 25px;
   font-weight: 800;
   line-height: 1.25;
 }
@@ -47,7 +52,7 @@
 .reservation-overview__created-at {
   margin: 20px 0 0;
   color: var(--color-text-secondary);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -66,7 +71,7 @@
   grid-template-columns: 104px 1fr;
   gap: 14px;
   margin: 24px 0 0;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .reservation-group-information__list dt {
@@ -139,7 +144,7 @@
 }
 
 .reservation-pet-accordion__name {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .reservation-pet-accordion__meta {
@@ -147,7 +152,7 @@
   flex-wrap: wrap;
   gap: 2px 6px;
   color: var(--color-text-secondary);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -170,7 +175,7 @@
 }
 
 .reservation-pet-accordion__count {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
 }
 
@@ -204,7 +209,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .reservation-date-status__information {
@@ -214,7 +219,7 @@
 
 .reservation-date-status__ticket {
   color: var(--color-text-secondary);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -242,7 +247,7 @@
 
 .reservation-cancel-dialog__description {
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.5;
   text-align: center;
@@ -259,7 +264,7 @@
   min-height: 48px;
   padding: 0 12px;
   border-radius: 12px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
 }
 

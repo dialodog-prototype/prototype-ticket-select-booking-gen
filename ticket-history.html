@@ -17,18 +17,34 @@
       </header>
 
       <div class="ticket-history__content">
-        <p class="ticket-history__notice" data-field="availability-notice"></p>
         <section class="ticket-summary" aria-label="이용권 요약">
-          <h2 class="ticket-summary__name" data-field="ticket-name"></h2>
+          <p class="ticket-history__notice" data-field="availability-notice"></p>
+          <div class="ticket-summary__heading">
+            <div>
+              <p class="ticket-summary__business" data-field="business-name"></p>
+              <h2 class="ticket-summary__name" data-field="ticket-name"></h2>
+            </div>
+            <span class="ticket-summary__phone" role="img" aria-label="전화 아이콘">
+              <img src="assets/icons/iconCall.svg" width="24" height="24" alt="" />
+            </span>
+          </div>
           <p class="ticket-summary__meta" data-field="ticket-meta"></p>
         </section>
 
-        <div class="ticket-history__tabs" role="tablist" aria-label="이용권 정보">
-          <button class="ticket-history__tab" type="button" data-action="select-tab" data-entity-id="status" role="tab" aria-selected="true">이용권 상태</button>
-          <button class="ticket-history__tab" type="button" data-action="select-tab" data-entity-id="history" role="tab" aria-selected="false">사용 내역</button>
-        </div>
+        <section class="ticket-information" aria-labelledby="ticket-status-title">
+          <h2 class="ticket-information__title section-title" id="ticket-status-title">이용권 상태</h2>
+          <dl class="ticket-information__list">
+            <dt>지급일</dt><dd data-field="issued-date"></dd>
+            <dt>개시일</dt><dd data-field="start-date"></dd>
+            <dt>만료일</dt><dd data-field="expiry-date"></dd>
+            <dt>예약 가능 날짜</dt><dd data-field="reservation-date-range"></dd>
+          </dl>
+        </section>
 
-        <section class="ticket-history__panel" data-field="ticket-panel"></section>
+        <section class="ticket-usage" aria-labelledby="ticket-usage-title">
+          <h2 class="ticket-usage__title section-title" id="ticket-usage-title">사용 내역</h2>
+          <div class="ticket-usage__list" data-field="usage-list"></div>
+        </section>
       </div>
     </main>
 

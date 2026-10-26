@@ -27,6 +27,13 @@ export const TICKET_LIST = [
 ];
 
 const TICKET_BY_ID = new Map(TICKET_LIST.map((ticket) => [ticket.id, ticket]));
+const ISSUED_DATE_BY_TICKET_ID = {
+  'ticket-school-event-1-7-days': '2026-10-23',
+  'ticket-school-5-small': '2026-10-20',
+  'ticket-school-10-small': '2026-10-15',
+  'ticket-school-5-large': '2026-10-18',
+  'ticket-school-unlimited': '2026-10-01',
+};
 
 function createSchoolTickets(ticketIds) {
   return ticketIds.map((ticketId) => {
@@ -34,6 +41,7 @@ function createSchoolTickets(ticketIds) {
 
     return {
       ...ticket,
+      issuedDate: ISSUED_DATE_BY_TICKET_ID[ticketId],
       totalCount: ticket.quantity,
       reservableCount: ticket.quantity,
       validityDays: ticket.unit === '주' ? ticket.validity * 7 : ticket.validity,

@@ -3,42 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>예약 상세</title>
+    <title>유치원 일정</title>
     <link rel="stylesheet" href="src/styles/app.css" />
   </head>
   <body>
     <main class="reservation-detail app-screen" aria-labelledby="reservation-detail-title">
       <header class="reservation-detail__header app-header">
         <button class="reservation-detail__back app-header__button" type="button" data-action="go-back" aria-label="예약 화면으로 돌아가기">‹</button>
-        <h1 class="reservation-detail__title app-header__title" id="reservation-detail-title">예약 상세</h1>
+        <h1 class="reservation-detail__title app-header__title" id="reservation-detail-title">유치원 일정</h1>
         <span aria-hidden="true"></span>
       </header>
 
+      <section class="reservation-detail__summary" aria-label="예약 정보">
+        <span class="reservation-detail__category-icon" aria-hidden="true">
+          <img src="assets/icons/iconSchool.svg" width="24" height="24" alt="" />
+        </span>
+        <div class="reservation-detail__summary-text">
+          <h2 class="reservation-detail__date" data-field="reservation-date"></h2>
+          <p class="reservation-detail__business">다이얼독 유치원</p>
+        </div>
+      </section>
+
       <div class="reservation-detail__content">
-        <section class="reservation-detail__type">유치원 예약</section>
-
-        <section class="reservation-detail__section" aria-labelledby="reservation-information-title">
-          <h2 class="reservation-detail__section-title section-title" id="reservation-information-title">예약 정보</h2>
-          <dl class="reservation-information">
-            <dt>예약 업체</dt><dd>다이얼독 유치원</dd>
-            <dt>일정</dt><dd data-field="reservation-date"></dd>
-          </dl>
-          <span class="reservation-information__phone" aria-label="전화 아이콘" role="img">☎</span>
-        </section>
-
         <section class="reservation-detail__section" aria-labelledby="reserved-pets-title">
           <div class="reservation-detail__section-heading">
             <h2 class="reservation-detail__section-title section-title" id="reserved-pets-title">예약한 반려견</h2>
-            <button class="reservation-detail__selection-action" type="button" data-action="toggle-all-selection" data-field="selection-action"></button>
+            <button class="reservation-detail__selection-action" type="button" data-action="toggle-all-selection" data-field="selection-action" hidden></button>
           </div>
-          <p class="reservation-detail__notice" data-field="cancellation-notice">예약 취소는 일정 시작 24시간 전까지 가능합니다.</p>
           <div class="reservation-detail__pet-list" data-field="reservation-pet-list"></div>
           <p class="reservation-detail__empty empty-state" data-field="empty-message" hidden>예약 내역이 없습니다.</p>
         </section>
       </div>
 
-      <footer class="reservation-detail__footer" data-field="cancellation-footer">
-        <button class="reservation-detail__cancel action-button action-button--danger" type="button" data-action="cancel-reservations">예약 취소</button>
+      <footer class="reservation-detail__footer cancellation-footer" data-field="cancellation-footer">
+        <button class="reservation-detail__cancel cancellation-footer__button action-button action-button--danger" type="button" data-action="cancel-reservations">예약 취소</button>
+        <p class="reservation-detail__notice cancellation-footer__notice" data-field="cancellation-notice">예약 취소는 일정 시작 24시간 전까지 가능합니다.</p>
       </footer>
     </main>
 

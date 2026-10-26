@@ -58,8 +58,13 @@ export function createReservationHome(root) {
     reservationList.innerHTML = reservations.length > 0 ? `
       <a class="reservation-card" href="reservation-detail.html?date=${selectedDateKey}">
         <div class="reservation-card__heading">
-          <span class="reservation-card__category">유치원</span>
-          <p class="reservation-card__title">다이얼독 유치원</p>
+          <span class="reservation-card__category" aria-hidden="true">
+            <img src="assets/icons/iconSchool.svg" width="24" height="24" alt="">
+          </span>
+          <div class="reservation-card__info">
+            <p class="reservation-card__category-label">유치원 예약</p>
+            <p class="reservation-card__title">다이얼독 유치원</p>
+          </div>
           <span class="reservation-card__chevron" aria-hidden="true">›</span>
         </div>
         <div class="reservation-card__counts">

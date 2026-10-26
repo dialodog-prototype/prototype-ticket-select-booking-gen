@@ -17,7 +17,22 @@ function readList(key) {
 
 function mergePets(defaultPets = [], storedPets = []) {
   const storedPetsById = new Map(storedPets.map((pet) => [pet.id, pet]));
-  const mergedDefaults = defaultPets.map((pet) => ({ ...pet, ...storedPetsById.get(pet.id) }));
+  const mergedDefaults = defaultPets.map((pet) => {
+    const mergedPet = { ...pet, ...storedPetsById.get(pet.id) };
+
+    if (!Array.isArray(mergedPet.schoolTickets)) return mergedPet;
+
+    return {
+      ...mergedPet,
+      schoolTickets: mergedPet.schoolTickets.map((ticket) => {
+        const defaultTicket = pet.schoolTickets?.find((item) => item.id === ticket.id);
+
+        return ticket.issuedDate === undefined && defaultTicket?.issuedDate
+          ? { ...ticket, issuedDate: defaultTicket.issuedDate }
+          : ticket;
+      }),
+    };
+  });
   const additionalPets = storedPets.filter((pet) => !defaultPets.some((defaultPet) => defaultPet.id === pet.id));
 
   return [...mergedDefaults, ...additionalPets];
