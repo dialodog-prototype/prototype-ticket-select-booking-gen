@@ -1,0 +1,59 @@
+.app-alert {
+  box-sizing: border-box;
+  width: min(calc(100% - 40px), 350px);
+  padding: 32px 22px 22px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 0;
+  border-radius: 20px;
+}
+
+.app-alert::backdrop {
+  background: rgb(0 0 0 / 45%);
+}
+
+.app-alert__message {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.app-alert__actions {
+  display: grid;
+  grid-template-columns: 1fr 1.7fr;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.app-alert__actions[data-state="notice"] {
+  grid-template-columns: 1fr;
+}
+
+.app-alert__button {
+  min-width: 0;
+  min-height: 54px;
+  padding: 0 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.app-alert__button--cancel {
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.app-alert__button--confirm {
+  color: var(--color-action-text);
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.app-alert__button[data-state="danger"] {
+  background: var(--color-warning);
+  border-color: var(--color-warning);
+}

@@ -1,5 +1,5 @@
 import { getStoredMembers } from '../../storage/member-storage.js';
-import { getPetReservableCount, getSchoolTickets, getTicketReservableCount, getSchoolTicketValidityLabel } from '../../services/school-ticket.js';
+import { getPetReservableCount, getSchoolTickets, getTicketReservableCount, getSchoolTicketValidityLabel, getSchoolTicketState } from '../../services/school-ticket.js';
 
 const PROFILE_IMAGE_BY_PET_ID = {
   'pet-bori': 'assets/images/defaultProfile_dog.svg',
@@ -15,8 +15,7 @@ function getSchoolReservableCount(pet) {
 
 function createTicketCard(pet, ticket) {
   const remaining = getTicketReservableCount(ticket);
-  const state = remaining > 0 ? 'active' : 'exhausted';
-  const label = remaining > 0 ? '이용 중' : '횟수 소진';
+  const { state, label } = getSchoolTicketState(ticket);
 
   return `
     <button class="ticket-card surface-card" type="button" data-action="open-ticket-history" data-entity-id="${pet.id}" data-ticket-id="${ticket.id}" data-state="${state}">

@@ -1,4 +1,5 @@
 import { cancelSchoolReservations } from '../../services/school-reservation.js';
+import { showAlert } from '../../components/alert-dialog.js';
 import { getSchoolReservationData } from '../../storage/school-reservation-storage.js';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -52,7 +53,6 @@ export function createReservationHistoryDetail(root) {
   const reservationCount = root.querySelector('[data-field="reservation-count"]');
   const petGroupsContainer = root.querySelector('[data-field="pet-groups"]');
   const completionToast = root.querySelector('[data-field="reservation-completion-toast"]');
-  const cancelDialog = document.querySelector('[data-field="cancel-dialog"]');
   const expandedPetIds = new Set();
 
   function getReservations() {
@@ -116,7 +116,6 @@ export function createReservationHistoryDetail(root) {
               <li class="reservation-date-status">
                 <span class="reservation-date-status__information">
                   <span>${formatDate(reservation.date)}</span>
-                  <span class="reservation-date-status__ticket">${reservation.ticketName ?? '이용권 정보 없음'}</span>
                 </span>
                 <span class="reservation-date-status__state reservation-date-status__state--${reservation.status === '취소' ? 'canceled' : 'confirmed'}">${reservation.status === '취소' ? '취소' : '확정'}</span>
               </li>
@@ -142,7 +141,7 @@ export function createReservationHistoryDetail(root) {
     window.history.replaceState(null, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
   }
 
-  root.addEventListener('click', (event) => {
+  root.addEventListener('click', async (event) => {
     const actionTarget = event.target.closest('[data-action]');
 
     if (!actionTarget) return;
@@ -162,27 +161,19 @@ export function createReservationHistoryDetail(root) {
         ?.focus();
     }
 
-    if (actionTarget.dataset.action === 'cancel-all' && !cancelAllButton.disabled && !cancelDialog.open) {
-      cancelDialog.showModal();
-    }
-
-  });
-
-  cancelDialog.addEventListener('click', (event) => {
-    const actionTarget = event.target.closest('[data-action]');
-
-    if (!actionTarget) return;
-
-    if (actionTarget.dataset.action === 'close-cancel-dialog') cancelDialog.close();
-
-    if (actionTarget.dataset.action === 'confirm-cancel-all') {
+    if (actionTarget.dataset.action === 'cancel-all' && !cancelAllButton.disabled) {
+      if (!await showAlert({
+        message: '예약을 취소하시겠습니까?\n취소 후에는 변경이 불가능합니다.',
+        cancelLabel: '닫기',
+        confirmLabel: '예약 취소',
+        danger: true,
+      })) return;
       const activeReservationIds = getReservations()
         .filter((reservation) => reservation.status !== '취소')
         .map((reservation) => reservation.id);
       const result = cancelSchoolReservations(activeReservationIds);
 
-      if (!result.ok) window.alert(result.message);
-      cancelDialog.close();
+      if (!result.ok) await showAlert({ message: result.message });
       render();
     }
   });

@@ -1,4 +1,5 @@
 import { cancelSchoolReservations } from '../../services/school-reservation.js';
+import { showAlert } from '../../components/alert-dialog.js';
 import { getSchoolTicket, getSchoolTicketRoundLabel } from '../../services/school-ticket.js';
 import { getStoredMembers } from '../../storage/member-storage.js';
 import { getSchoolReservationData } from '../../storage/school-reservation-storage.js';
@@ -80,6 +81,8 @@ export function createReservationDetail(root) {
       const pet = petsById.get(reservation.petId);
       const petDetails = [pet?.breed, pet?.weight].filter(Boolean).join(' / ');
 
+      // Business-created reservations may have no ticketId: show '미등록' in the ticket row dd.
+      // The customer app still requires a selected ticket when creating a reservation.
       return `
         <article class="reservation-pet-card surface-card${isSelected ? ' surface-card--selected' : ''}">
           <div class="reservation-pet-card__profile">
@@ -90,11 +93,11 @@ export function createReservationDetail(root) {
             </div>
           </div>
           <div class="reservation-pet-card__usage"${isSelecting ? ' hidden' : ''}>
-            <p class="reservation-pet-card__usage-title">이용 정보</p>
+            <p class="reservation-pet-card__usage-title">이용권 정보</p>
             <dl class="reservation-pet-card__information">
               <div class="reservation-pet-card__row">
                 <dt>이용권</dt>
-                <dd>${reservation.ticketId ? (reservation.ticketName ?? '유치원 이용권') : '이용권 미등록'}</dd>
+                <dd>${reservation.ticketId ? (reservation.ticketName ?? '유치원 이용권') : '미등록'}</dd>
               </div>
               ${ticketRoundLabel ? `<div class="reservation-pet-card__row"><dt>이용 회차</dt><dd>${ticketRoundLabel}</dd></div>` : ''}
             </dl>
@@ -105,7 +108,7 @@ export function createReservationDetail(root) {
     }).join('');
   }
 
-  root.addEventListener('click', (event) => {
+  root.addEventListener('click', async (event) => {
     const actionTarget = event.target.closest('[data-action]');
 
     if (!actionTarget) return;
@@ -144,11 +147,12 @@ export function createReservationDetail(root) {
         return;
       }
       if (state.selectedReservationIds.size === 0) return;
-      if (!window.confirm(`${state.selectedReservationIds.size}건의 예약을 취소할까요?`)) return;
+      const reservationIds = [...state.selectedReservationIds];
+      if (!await showAlert({ message: `${reservationIds.length}건의 예약을 취소할까요?`, cancelLabel: '취소', confirmLabel: '확인', danger: true })) return;
 
-      const result = cancelSchoolReservations([...state.selectedReservationIds]);
+      const result = cancelSchoolReservations(reservationIds);
 
-      if (!result.ok) window.alert(result.message);
+      if (!result.ok) await showAlert({ message: result.message });
       else window.location.assign('./index.html?reservationCancelled=true');
 
       render();
