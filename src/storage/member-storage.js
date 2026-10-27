@@ -1,5 +1,6 @@
 import { DEFAULT_MEMBER_LIST } from './default-member-list.js';
-import { getSchoolTickets, getTicketReservableCount } from '../services/school-ticket.js';
+import { getSchoolTickets, getTicketReservableCount, getSchoolTicketLifecycle } from '../services/school-ticket.js';
+import { getSchoolReservationData } from './school-reservation-storage.js';
 
 const MEMBER_LIST_KEY = 'memberList';
 const DELETED_MEMBER_IDS_KEY = 'prototype.memberTags.deletedMemberIds';
@@ -27,9 +28,7 @@ function mergePets(defaultPets = [], storedPets = []) {
       schoolTickets: mergedPet.schoolTickets.map((ticket) => {
         const defaultTicket = pet.schoolTickets?.find((item) => item.id === ticket.id);
 
-        return ticket.issuedDate === undefined && defaultTicket?.issuedDate
-          ? { ...ticket, issuedDate: defaultTicket.issuedDate }
-          : ticket;
+        return { ...defaultTicket, ...ticket };
       }),
     };
   });
@@ -55,8 +54,27 @@ function mergeMembers(defaultMembers, storedMembers) {
 export function getStoredMembers() {
   const storedMembers = readList(MEMBER_LIST_KEY);
   const deletedMemberIds = new Set(readList(DELETED_MEMBER_IDS_KEY));
+  const { schoolReservationList } = getSchoolReservationData();
+  let hasDateChanges = false;
+  const members = mergeMembers(DEFAULT_MEMBER_LIST, storedMembers).map((member) => ({
+    ...member,
+    pets: member.pets.map((pet) => ({
+      ...pet,
+      schoolTickets: getSchoolTickets(pet).map((ticket) => {
+        const reservations = schoolReservationList.filter((reservation) => (
+          reservation.memberId === member.id && reservation.petId === pet.id && reservation.ticketId === ticket.id
+        ));
+        const updatedTicket = getSchoolTicketLifecycle(ticket, reservations);
+        hasDateChanges ||= ticket.startDate !== updatedTicket.startDate
+          || ticket.expiryDate !== updatedTicket.expiryDate
+          || ticket.hasOnlyCancelledReservations !== updatedTicket.hasOnlyCancelledReservations;
+        return updatedTicket;
+      }),
+    })),
+  }));
 
-  return mergeMembers(DEFAULT_MEMBER_LIST, storedMembers).filter((member) => !deletedMemberIds.has(member.id));
+  if (hasDateChanges) window.localStorage.setItem(MEMBER_LIST_KEY, JSON.stringify(members));
+  return members.filter((member) => !deletedMemberIds.has(member.id));
 }
 
 export function updateSchoolTicketCounts(memberId, ticketChanges) {

@@ -49,6 +49,59 @@ export function getTicketReservableCount(ticket) {
   return Math.max(0, Number(ticket?.reservableCount ?? 0));
 }
 
+function getDateKey(date) {
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+}
+
+export function getSchoolTicketDates(ticket, { firstReservationDate, firstAttendanceDate } = {}) {
+  const startDate = ticket.startDate || {
+    'issued-date': ticket.issuedDate,
+    'first-reservation': firstReservationDate,
+    'first-attendance': firstAttendanceDate,
+  }[ticket.startDatePolicy] || null;
+
+  if (ticket.unlimitedValidity) return { startDate, expiryDate: null };
+  if (ticket.expiryDate) return { startDate, expiryDate: ticket.expiryDate };
+
+  const validityDays = Number(ticket.validityDays ?? (ticket.unit === '주' ? ticket.validity * 7 : ticket.validity));
+  if (!startDate || !Number.isInteger(validityDays) || validityDays <= 0) return { startDate, expiryDate: null };
+
+  const [year, month, day] = startDate.split('-').map(Number);
+  const expiryDate = new Date(year, month - 1, day);
+  // The start date counts as day one of the validity period.
+  expiryDate.setDate(expiryDate.getDate() + validityDays - 1);
+  return { startDate, expiryDate: getDateKey(expiryDate) };
+}
+
+export function getSchoolTicketState(ticket, today = new Date()) {
+  const todayKey = getDateKey(today);
+  if (ticket.hasOnlyCancelledReservations) return { state: 'upcoming', label: '사용 전' };
+  if (!ticket.unlimitedValidity && ticket.expiryDate && ticket.expiryDate < todayKey) return { state: 'expired', label: '만료' };
+  if (getTicketReservableCount(ticket) === 0) return { state: 'exhausted', label: '횟수 소진' };
+  if (!ticket.startDate) return { state: 'upcoming', label: '사용 전' };
+  return { state: 'active', label: '사용 중' };
+}
+
+export function getSchoolTicketLifecycle(ticket, reservations) {
+  const activeReservations = reservations.filter((reservation) => reservation.status !== '취소');
+  // First reservation means the creation date, not the scheduled booking date.
+  const firstCreatedAt = reservations.map((reservation) => reservation.createdAt).filter(Boolean).sort()[0];
+  const firstReservationDate = firstCreatedAt ? getDateKey(new Date(firstCreatedAt)) : null;
+  // A first-attendance ticket records its scheduled booking date even before that date arrives.
+  const firstAttendanceDate = activeReservations
+    .map((reservation) => reservation.bookingDate ?? reservation.date)
+    .filter(Boolean)
+    .sort()[0];
+  const dates = getSchoolTicketDates(ticket, { firstReservationDate, firstAttendanceDate });
+
+  return {
+    ...ticket,
+    ...dates,
+    // Cancellation preserves the original dates; cancelling every reservation resets only the state.
+    hasOnlyCancelledReservations: reservations.length > 0 && activeReservations.length === 0,
+  };
+}
+
 export function getSchoolTicketValidityLabel(ticket, today = new Date()) {
   if (ticket.unlimitedValidity) return '유효기간 : 무제한';
 

@@ -68,7 +68,7 @@ export function createReservationHome(root) {
           <span class="reservation-card__chevron" aria-hidden="true">›</span>
         </div>
         <div class="reservation-card__counts">
-          <p class="reservation-card__count">${reservations.length}마리</p>
+          ${[...new Map(reservations.map((reservation) => [reservation.petId ?? reservation.petName, reservation.petName])).values()].map((petName) => `<p class="reservation-card__count">${petName}</p>`).join('')}
         </div>
       </a>
     ` : '';

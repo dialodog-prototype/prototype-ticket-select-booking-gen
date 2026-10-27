@@ -46,7 +46,10 @@
         <button class="ticket-selection-sheet__backdrop" type="button" data-action="close-ticket-selection" aria-label="이용권 선택 닫기"></button>
         <div class="ticket-selection-sheet__panel">
           <div class="ticket-selection-sheet__handle" aria-hidden="true"></div>
-          <h2 class="ticket-selection-sheet__title" id="ticket-sheet-title" data-field="ticket-sheet-title">이용권 선택</h2>
+          <div class="ticket-selection-sheet__heading">
+            <button class="ticket-selection-sheet__close app-header__button" type="button" data-action="close-ticket-selection" aria-label="이용권 선택 닫기">×</button>
+            <h2 class="ticket-selection-sheet__title" id="ticket-sheet-title" data-field="ticket-sheet-title">이용권 선택</h2>
+          </div>
           <div class="ticket-selection-sheet__options" data-field="ticket-options"></div>
         </div>
       </section>

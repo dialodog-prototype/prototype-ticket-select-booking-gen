@@ -1,4 +1,5 @@
 import { getStoredMembers } from '../../storage/member-storage.js';
+import { showAlert } from '../../components/alert-dialog.js';
 import { getSchoolReservationData } from '../../storage/school-reservation-storage.js';
 import {
   getSelectedPetAvailability,
@@ -133,12 +134,12 @@ export function createReservationForm(root, { onClose } = {}) {
 
     const selectedTicketId = state.selectedTicketIdsByPetId.get(pet.id);
     ticketSheetTitle.textContent = `${pet.petName} 이용권 선택`;
-    ticketOptions.innerHTML = getSchoolTickets(pet).map((ticket) => {
+    ticketOptions.innerHTML = getSchoolTickets(pet).filter((ticket) => getTicketReservableCount(ticket) > 0).map((ticket) => {
       const isSelected = ticket.id === selectedTicketId;
       const remaining = getTicketReservableCount(ticket);
 
       return `
-        <button class="ticket-selection-sheet__option${isSelected ? ' ticket-selection-sheet__option--selected' : ''}" type="button" data-action="select-ticket" data-ticket-id="${ticket.id}" ${remaining === 0 && !isSelected ? 'disabled' : ''} aria-pressed="${isSelected}">
+        <button class="ticket-selection-sheet__option${isSelected ? ' ticket-selection-sheet__option--selected' : ''}" type="button" data-action="select-ticket" data-ticket-id="${ticket.id}" aria-pressed="${isSelected}">
           <span>${ticket.name}</span>
           <span>예약 가능 ${remaining}회</span>
           <span class="ticket-selection-sheet__check${isSelected ? ' ticket-selection-sheet__check--selected' : ''}" aria-hidden="true">${isSelected ? '✓' : ''}</span>
@@ -174,6 +175,7 @@ export function createReservationForm(root, { onClose } = {}) {
     const canSelectDate = hasSelectedTicketForEveryPet();
 
     monthLabel.textContent = formatMonth(displayedMonth);
+    root.querySelector('[data-action="previous-reservation-month"]').disabled = displayedMonth <= new Date(today.getFullYear(), today.getMonth(), 1);
     dateSection.dataset.state = canSelectDate ? 'ready' : 'locked';
     daysContainer.innerHTML = '';
 
@@ -209,7 +211,7 @@ export function createReservationForm(root, { onClose } = {}) {
     renderSummary();
   }
 
-  root.addEventListener('click', (event) => {
+  root.addEventListener('click', async (event) => {
     const actionTarget = event.target.closest('[data-action]');
 
     if (!actionTarget) return;
@@ -260,6 +262,7 @@ export function createReservationForm(root, { onClose } = {}) {
     }
 
     if (actionTarget.dataset.action === 'previous-reservation-month') {
+      if (state.displayedMonth <= new Date(today.getFullYear(), today.getMonth(), 1)) return;
       state.displayedMonth = new Date(state.displayedMonth.getFullYear(), state.displayedMonth.getMonth() - 1, 1);
       renderCalendar();
     }
@@ -290,7 +293,7 @@ export function createReservationForm(root, { onClose } = {}) {
       });
 
       if (!result.ok) {
-        window.alert(result.message);
+        await showAlert({ message: result.message });
         render();
         return;
       }

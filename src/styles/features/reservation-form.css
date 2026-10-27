@@ -199,9 +199,20 @@
   border-radius: 999px;
 }
 
+.ticket-selection-sheet__heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .ticket-selection-sheet__title {
-  margin: 0 0 16px;
+  margin: 0;
   font-size: 20px;
+}
+
+.ticket-selection-sheet__close {
+  flex-shrink: 0;
+  margin-left: -16px;
 }
 
 .ticket-selection-sheet__options {

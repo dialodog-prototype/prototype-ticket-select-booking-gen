@@ -10,6 +10,7 @@
 @import url("./features/my-tickets.css");
 @import url("./features/ticket-history.css");
 @import url("./components/ui-primitives.css");
+@import url("./components/alert-dialog.css");
 
 .visually-hidden {
   position: absolute;

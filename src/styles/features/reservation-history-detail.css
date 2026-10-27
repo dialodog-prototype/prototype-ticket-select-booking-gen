@@ -217,65 +217,10 @@
   gap: 4px;
 }
 
-.reservation-date-status__ticket {
-  color: var(--color-text-secondary);
-  font-size: 12px;
-  font-weight: 600;
-}
-
 .reservation-date-status__state--confirmed {
   color: var(--color-primary);
 }
 
 .reservation-date-status__state--canceled {
   color: var(--color-warning);
-}
-
-.reservation-cancel-dialog {
-  box-sizing: border-box;
-  width: min(calc(100% - 40px), 350px);
-  padding: 24px;
-  color: var(--color-text);
-  background: var(--color-surface);
-  border: 0;
-  border-radius: 20px;
-}
-
-.reservation-cancel-dialog::backdrop {
-  background: rgb(0 0 0 / 45%);
-}
-
-.reservation-cancel-dialog__description {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.5;
-  text-align: center;
-}
-
-.reservation-cancel-dialog__actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 24px;
-}
-
-.reservation-cancel-dialog__button {
-  min-height: 48px;
-  padding: 0 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.reservation-cancel-dialog__button--close {
-  color: var(--color-text);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-}
-
-.reservation-cancel-dialog__button--confirm {
-  color: var(--color-action-text);
-  background: var(--color-warning);
-  border: 1px solid var(--color-warning);
 }

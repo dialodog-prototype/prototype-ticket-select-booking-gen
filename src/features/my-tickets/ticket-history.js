@@ -1,6 +1,6 @@
 import { getStoredMembers } from '../../storage/member-storage.js';
 import { getSchoolReservationData } from '../../storage/school-reservation-storage.js';
-import { getSchoolTicket, getSchoolTickets, getSchoolTicketRoundLabel, getTicketReservableCount } from '../../services/school-ticket.js';
+import { getSchoolTicket, getSchoolTickets, getSchoolTicketRoundLabel, getTicketReservableCount, getSchoolTicketState } from '../../services/school-ticket.js';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
 const START_DATE_POLICY_LABELS = {
@@ -59,7 +59,7 @@ export function createTicketHistory(root) {
     }
 
     const remaining = getTicketReservableCount(ticket);
-    const ticketState = remaining > 0 ? '이용 중' : '횟수 소진';
+    const { label: ticketState } = getSchoolTicketState(ticket);
     const startDateLabel = formatDate(ticket.startDate, { includeWeekday: false });
     const { schoolReservationList } = getSchoolReservationData();
     const usageHistory = schoolReservationList
