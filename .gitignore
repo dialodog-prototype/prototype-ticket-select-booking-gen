@@ -1,2 +1,6 @@
+.claude/
 .codegraph/
+.gitnexus/
 AGENTS.md
+CLAUDE.md
+/outputs/

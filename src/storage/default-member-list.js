@@ -66,7 +66,7 @@ export const DEFAULT_MEMBER_LIST = [
         petTags: ['사교적'],
         schoolTickets: createSchoolTickets([
           'ticket-school-5-small',
-          'ticket-school-event-1-7-days',
+          'ticket-school-10-small',
         ]),
         birthDate: '2021-04-12',
         animalRegistrationNumber: '410000202100123',
@@ -75,8 +75,8 @@ export const DEFAULT_MEMBER_LIST = [
         gender: '여아',
         neuteredStatus: '중성화 완료',
         memo: '',
-        remainingCountByType: { school: 6, daycare: 0, oneway: 0, roundtrip: 0 },
-        totalReservableCountByType: { school: 6, daycare: 0, oneway: 0, roundtrip: 0 },
+        remainingCountByType: { school: 15, daycare: 0, oneway: 0, roundtrip: 0 },
+        totalReservableCountByType: { school: 15, daycare: 0, oneway: 0, roundtrip: 0 },
         totalReservedCountByType: { school: 0, daycare: 0, oneway: 0, roundtrip: 0 },
       },
       {

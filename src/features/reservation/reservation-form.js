@@ -5,10 +5,10 @@ import {
   getSelectedPetAvailability,
 } from '../../services/reservation-availability.js';
 import {
+  getAvailableSchoolTickets,
   getDefaultSchoolTicket,
-  getPetReservableCount,
   getSchoolTicket,
-  getSchoolTickets,
+  getSchoolTicketValidityLabel,
   getTicketReservableCount,
 } from '../../services/school-ticket.js';
 import {
@@ -98,26 +98,25 @@ export function createReservationForm(root, { onClose } = {}) {
 
   function renderPets() {
     petList.innerHTML = getPetsSorted().map((pet) => {
-      const remaining = getPetReservableCount(pet);
       const isSelected = state.selectedPetIds.has(pet.id);
-      const disabled = remaining === 0;
-      const availabilityLabel = `${remaining}회 예약 가능`;
-      const selectedTicket = getSchoolTicket(pet, state.selectedTicketIdsByPetId.get(pet.id));
+      const defaultTicket = getDefaultSchoolTicket(pet);
+      const disabled = !defaultTicket;
+      const selectedTicket = getSchoolTicket(pet, state.selectedTicketIdsByPetId.get(pet.id))
+        ?? defaultTicket;
 
       return `
         <article class="pet-selector__item surface-card${isSelected ? ' surface-card--selected pet-selector__item--selected' : ''}" ${disabled ? 'data-state="disabled"' : ''}>
-          <button class="pet-selector__pet-button" type="button" data-action="toggle-pet" data-pet-id="${pet.id}" ${disabled ? 'disabled' : ''} aria-pressed="${isSelected}">
+          <button class="pet-selector__pet-button" type="button" data-action="toggle-pet" data-pet-id="${pet.id}" ${disabled ? 'disabled' : ''} role="checkbox" aria-checked="${isSelected}">
           <span class="pet-selector__check" aria-hidden="true">${isSelected ? '✓' : ''}</span>
           <span class="pet-selector__name">${pet.petName}</span>
-          <span class="pet-selector__count">${availabilityLabel}</span>
           </button>
-          ${isSelected ? `
-            <button class="pet-selector__ticket" type="button" data-action="open-ticket-selection" data-pet-id="${pet.id}">
-              <span class="pet-selector__ticket-label">이용권</span>
-              <span class="pet-selector__ticket-value">${selectedTicket ? `${selectedTicket.name} · 예약 가능 ${getTicketReservableCount(selectedTicket)}회` : '이용권을 선택해주세요'}</span>
+            <button class="pet-selector__ticket" type="button" data-action="open-ticket-selection" data-pet-id="${pet.id}" ${disabled ? 'disabled' : ''}>
+              ${disabled ? '<span>사용 가능한 이용권이 없습니다.</span>' : `
+              <span class="pet-selector__ticket-value">${selectedTicket ? selectedTicket.name : '이용권을 선택해주세요'}</span>
+              <span class="pet-selector__ticket-count">${getTicketReservableCount(selectedTicket)}회 남음</span>
               <span class="pet-selector__ticket-chevron" aria-hidden="true">›</span>
+              `}
             </button>
-          ` : ''}
         </article>
       `;
     }).join('');
@@ -133,16 +132,19 @@ export function createReservationForm(root, { onClose } = {}) {
     if (!pet) return;
 
     const selectedTicketId = state.selectedTicketIdsByPetId.get(pet.id);
-    ticketSheetTitle.textContent = `${pet.petName} 이용권 선택`;
-    ticketOptions.innerHTML = getSchoolTickets(pet).filter((ticket) => getTicketReservableCount(ticket) > 0).map((ticket) => {
+    ticketSheetTitle.textContent = '이용권 선택';
+    ticketOptions.innerHTML = getAvailableSchoolTickets(pet).map((ticket) => {
       const isSelected = ticket.id === selectedTicketId;
       const remaining = getTicketReservableCount(ticket);
+      const validityLabel = getSchoolTicketValidityLabel(ticket).replace(/^만료일 : /, '유효기간 : ');
 
       return `
         <button class="ticket-selection-sheet__option${isSelected ? ' ticket-selection-sheet__option--selected' : ''}" type="button" data-action="select-ticket" data-ticket-id="${ticket.id}" aria-pressed="${isSelected}">
-          <span>${ticket.name}</span>
-          <span>예약 가능 ${remaining}회</span>
           <span class="ticket-selection-sheet__check${isSelected ? ' ticket-selection-sheet__check--selected' : ''}" aria-hidden="true">${isSelected ? '✓' : ''}</span>
+          <span class="ticket-selection-sheet__info">
+            <span>${ticket.name}</span>
+            <span class="ticket-selection-sheet__details">예약가능 : ${remaining}회 · ${validityLabel}</span>
+          </span>
         </button>
       `;
     }).join('');
@@ -239,7 +241,21 @@ export function createReservationForm(root, { onClose } = {}) {
     }
 
     if (actionTarget.dataset.action === 'open-ticket-selection') {
-      state.activeTicketPetId = actionTarget.dataset.petId;
+      const { petId } = actionTarget.dataset;
+      const pet = pets.find((item) => item.id === petId);
+
+      if (!pet || !getDefaultSchoolTicket(pet)) return;
+
+      if (!state.selectedPetIds.has(petId)) {
+        const defaultTicket = getDefaultSchoolTicket(pet);
+
+        state.selectedPetIds.add(petId);
+        if (defaultTicket) state.selectedTicketIdsByPetId.set(petId, defaultTicket.id);
+        state.selectedDates.clear();
+        render();
+      }
+
+      state.activeTicketPetId = petId;
       renderTicketOptions();
       ticketSelectionSheet.hidden = false;
       ticketSelectionSheet.dataset.state = 'visible';

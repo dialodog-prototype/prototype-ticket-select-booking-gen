@@ -77,7 +77,7 @@
 
 .pet-selector__pet-button {
   display: grid;
-  grid-template-columns: 30px 1fr auto;
+  grid-template-columns: 30px 1fr;
   align-items: center;
   width: 100%;
   min-height: 70px;
@@ -104,7 +104,7 @@
   place-items: center;
   color: var(--color-surface);
   border: 1px solid var(--color-border-light);
-  border-radius: 50%;
+  border-radius: 4px;
   font-size: 14px;
 }
 
@@ -113,24 +113,14 @@
   border-color: var(--color-primary);
 }
 
-.pet-selector__name,
-.pet-selector__count {
+.pet-selector__name {
   font-size: 18px;
   font-weight: 700;
 }
 
-.pet-selector__count {
-  color: var(--color-text);
-  font-size: 15px;
-}
-
-.pet-selector__item[data-state="disabled"] .pet-selector__count {
-  color: var(--color-text-muted);
-}
-
 .pet-selector__ticket {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 10px;
   align-items: center;
   width: 100%;
@@ -141,12 +131,23 @@
   border: 0;
   border-top: 1px solid var(--color-border-light);
   font-size: 14px;
-  font-weight: 700;
   text-align: left;
 }
 
-.pet-selector__ticket-label {
-  color: var(--color-text-secondary);
+.pet-selector__ticket-count {
+  color: var(--color-primary);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.pet-selector__ticket:disabled {
+  grid-template-columns: 1fr;
+  color: var(--color-text-muted);
+  cursor: default;
+}
+
+.pet-selector__pet-button:disabled {
+  cursor: default;
 }
 
 .pet-selector__ticket-value {
@@ -222,7 +223,7 @@
 
 .ticket-selection-sheet__option {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 22px minmax(0, 1fr);
   gap: 8px;
   align-items: center;
   width: 100%;
@@ -242,6 +243,19 @@
   background: #fcfcfc;
 }
 
+.ticket-selection-sheet__info {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ticket-selection-sheet__details {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
 .ticket-selection-sheet__option--selected {
   color: var(--color-primary);
   border-color: #dbeaff;
@@ -254,7 +268,7 @@
   place-items: center;
   color: var(--color-primary);
   border: 1px solid var(--color-border-light);
-  border-radius: 50%;
+  border-radius: 4px;
   font-size: 14px;
 }
 

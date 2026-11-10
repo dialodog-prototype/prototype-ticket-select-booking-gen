@@ -74,7 +74,7 @@ export function createTicketHistory(root) {
     availabilityNotice.dataset.state = remaining <= 2 ? 'low' : 'available';
     businessName.textContent = ticket.businessName ?? '다이얼독 유치원';
     ticketName.textContent = ticket.name;
-    ticketMeta.textContent = `${ticket.totalCount}회 / ${formatValidity(ticket)} / ${formatPrice(ticket.price)}`;
+    ticketMeta.textContent = `기본 정보 : ${ticket.totalCount}회 / ${formatValidity(ticket)} / ${formatPrice(ticket.price)}`;
 
     issuedDate.textContent = formatDate(ticket.issuedDate, { includeWeekday: false });
     const startDatePolicy = START_DATE_POLICY_LABELS[ticket.startDatePolicy];
@@ -89,10 +89,16 @@ export function createTicketHistory(root) {
 
       return `
         <article class="ticket-usage-item surface-card" data-state="${reservation.status === '취소' ? 'cancelled' : 'confirmed'}">
-          <strong class="ticket-usage-item__business">${reservation.businessName ?? businessName.textContent}</strong>
-          <span class="ticket-usage-item__date">${formatDate(reservation.date)}</span>
-          ${roundLabel ? `<span class="ticket-usage-item__round">${roundLabel}</span>` : ''}
-          ${reservation.status === '취소' ? '<span class="ticket-usage-item__state">취소</span>' : ''}
+          <div class="ticket-usage-item__heading">
+            <strong class="ticket-usage-item__business">${reservation.businessName ?? businessName.textContent}</strong>
+            ${reservation.status === '취소' ? '<span class="ticket-usage-item__state">취소</span>' : ''}
+          </div>
+          <dl class="ticket-usage-item__details">
+            <dt>이용 날짜</dt>
+            <dd class="ticket-usage-item__date">${formatDate(reservation.date)}</dd>
+            <dt>이용 회차</dt>
+            <dd class="ticket-usage-item__round">${roundLabel ?? '-'}</dd>
+          </dl>
         </article>
       `;
     }).join('') : '<p class="ticket-usage__empty empty-state">사용 내역이 없습니다.</p>';
