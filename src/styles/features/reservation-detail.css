@@ -1,6 +1,6 @@
 .reservation-detail {
-  --font-size-page-title: 22px;
-  --font-size-section-title: 20px;
+  --font-size-page-title: 20px;
+  --font-size-section-title: 18px;
   padding-bottom: 216px;
 }
 
@@ -127,7 +127,6 @@
   margin: 0;
   color: var(--color-text-secondary);
   font-size: 13px;
-  font-weight: 700;
 }
 
 .reservation-pet-card__row {

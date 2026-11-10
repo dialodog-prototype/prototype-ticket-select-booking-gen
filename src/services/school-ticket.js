@@ -28,8 +28,7 @@ function getValiditySortValue(ticket) {
 }
 
 export function getDefaultSchoolTicket(pet) {
-  return getSchoolTickets(pet)
-    .filter((ticket) => getTicketReservableCount(ticket) > 0)
+  return getAvailableSchoolTickets(pet)
     .sort((left, right) => {
       const stateDifference = Number(Boolean(left.expiryDate)) - Number(Boolean(right.expiryDate));
 
@@ -51,6 +50,16 @@ export function getTicketReservableCount(ticket) {
 
 function getDateKey(date) {
   return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+}
+
+export function getAvailableSchoolTickets(pet, today = new Date()) {
+  const todayKey = getDateKey(today);
+
+  return getSchoolTickets(pet).filter((ticket) => (
+    getTicketReservableCount(ticket) > 0
+    && (!ticket.expiryDate || todayKey <= ticket.expiryDate)
+    && ticket.isIssuanceCancelled !== true
+  ));
 }
 
 export function getSchoolTicketDates(ticket, { firstReservationDate, firstAttendanceDate } = {}) {
@@ -75,10 +84,11 @@ export function getSchoolTicketDates(ticket, { firstReservationDate, firstAttend
 
 export function getSchoolTicketState(ticket, today = new Date()) {
   const todayKey = getDateKey(today);
-  if (ticket.hasOnlyCancelledReservations) return { state: 'upcoming', label: '사용 전' };
   if (!ticket.unlimitedValidity && ticket.expiryDate && ticket.expiryDate < todayKey) return { state: 'expired', label: '만료' };
   if (getTicketReservableCount(ticket) === 0) return { state: 'exhausted', label: '횟수 소진' };
-  if (!ticket.startDate) return { state: 'upcoming', label: '사용 전' };
+  if (!ticket.startDate && getTicketReservableCount(ticket) === Number(ticket.totalCount)) {
+    return { state: 'upcoming', label: '사용 전' };
+  }
   return { state: 'active', label: '사용 중' };
 }
 
@@ -111,7 +121,7 @@ export function getSchoolTicketValidityLabel(ticket, today = new Date()) {
 
     if (expiryDate.getUTCFullYear() === year && expiryDate.getUTCMonth() === month - 1 && expiryDate.getUTCDate() === day) {
       const todayTimestamp = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
-      const remainingDays = Math.max(0, Math.round((expiryDate.getTime() - todayTimestamp) / 86400000));
+      const remainingDays = Math.max(0, Math.round((expiryDate.getTime() - todayTimestamp) / 86400000) + 1);
 
       return `만료일 : ${remainingDays}일 남음`;
     }

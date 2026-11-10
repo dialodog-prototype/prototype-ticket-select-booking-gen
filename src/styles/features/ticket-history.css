@@ -1,6 +1,6 @@
 .ticket-history {
-  --font-size-page-title: 22px;
-  --font-size-section-title: 20px;
+  --font-size-page-title: 20px;
+  --font-size-section-title: 18px;
   --size-app-header: 54px;
   --radius-3: 7px;
   --radius-4: 10px;
@@ -10,12 +10,8 @@
 
 .ticket-history__notice {
   margin: 0;
-  padding: 10px 20px;
   color: var(--color-primary);
-  background: var(--color-primary-soft);
-  border-radius: var(--radius-4);
   font-weight: 600;
-  letter-spacing: -0.8px;
 }
 
 .ticket-history__notice[data-state="low"] {
@@ -107,44 +103,45 @@
 }
 
 .ticket-usage-item {
-  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 7px;
+  gap: 18px;
   min-height: 95px;
   padding: 21px 20px;
 }
 
+.ticket-usage-item__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .ticket-usage-item__business {
-  grid-column: 1;
   color: var(--color-text);
   font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.8px;
 }
 
-.ticket-usage-item__date,
-.ticket-usage-item__round {
+.ticket-usage-item__details {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 7px 16px;
+  margin: 0;
   color: var(--color-text-secondary);
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.8px;
 }
 
-.ticket-usage-item__date {
-  grid-column: 1;
-}
-
+.ticket-usage-item__date,
 .ticket-usage-item__round {
-  grid-column: 2;
-  grid-row: 1 / 3;
-  align-self: center;
+  margin: 0;
+  text-align: right;
 }
 
 .ticket-usage-item__state {
-  position: absolute;
-  top: 20px;
-  right: 19px;
+  flex-shrink: 0;
   padding: 6px 12px;
   color: #ffffff;
   background: var(--color-warning);

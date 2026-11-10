@@ -22,7 +22,7 @@ function createTicketCard(pet, ticket) {
       <p class="ticket-card__state">${label}</p>
       <h4 class="ticket-card__name">${ticket.name}</h4>
       <div class="ticket-card__metadata">
-        <p class="ticket-card__meta">잔여 : ${remaining}회</p>
+        <p class="ticket-card__meta">예약 가능 : ${remaining}회</p>
         <p class="ticket-card__validity">${getSchoolTicketValidityLabel(ticket)}</p>
       </div>
       <span class="ticket-card__chevron" aria-hidden="true">›</span>
