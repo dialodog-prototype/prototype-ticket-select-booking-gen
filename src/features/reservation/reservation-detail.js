@@ -93,7 +93,7 @@ export function createReservationDetail(root) {
             </div>
           </div>
           <div class="reservation-pet-card__usage"${isSelecting ? ' hidden' : ''}>
-            <p class="reservation-pet-card__usage-title">이용권 정보</p>
+            <p class="reservation-pet-card__usage-title">이용 정보</p>
             <dl class="reservation-pet-card__information">
               <div class="reservation-pet-card__row">
                 <dt>이용권</dt>
@@ -148,7 +148,12 @@ export function createReservationDetail(root) {
       }
       if (state.selectedReservationIds.size === 0) return;
       const reservationIds = [...state.selectedReservationIds];
-      if (!await showAlert({ message: `${reservationIds.length}건의 예약을 취소할까요?`, cancelLabel: '취소', confirmLabel: '확인', danger: true })) return;
+      if (!await showAlert({
+        message: '예약을 취소하시겠습니까\n최소 후에는 변경이 불가능합니다.',
+        cancelLabel: '닫기',
+        confirmLabel: '예약 취소',
+        danger: true,
+      })) return;
 
       const result = cancelSchoolReservations(reservationIds);
 

@@ -11,9 +11,10 @@ function formatReservationDate(dateKey) {
 }
 
 function formatPetReservationDates(reservations) {
-  const dates = [...new Set(reservations.map((reservation) => reservation.date))].sort();
+  const createdAt = new Date(reservations[0].createdAt);
+  const dateKey = `${createdAt.getFullYear()}-${createdAt.getMonth() + 1}-${createdAt.getDate()}`;
 
-  return formatReservationDate(dates[0]);
+  return formatReservationDate(dateKey);
 }
 
 function getStatusInfo(status) {

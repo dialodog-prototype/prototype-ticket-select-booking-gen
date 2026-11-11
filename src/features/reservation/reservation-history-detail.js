@@ -163,7 +163,7 @@ export function createReservationHistoryDetail(root) {
 
     if (actionTarget.dataset.action === 'cancel-all' && !cancelAllButton.disabled) {
       if (!await showAlert({
-        message: '예약을 취소하시겠습니까?\n취소 후에는 변경이 불가능합니다.',
+        message: '예약을 취소하시겠습니까\n최소 후에는 변경이 불가능합니다.',
         cancelLabel: '닫기',
         confirmLabel: '예약 취소',
         danger: true,
