@@ -37,6 +37,7 @@ export function createReservationForm(root, { onClose } = {}) {
     selectedPetIds: new Set(),
     selectedTicketIdsByPetId: new Map(),
     activeTicketPetId: null,
+    pendingTicketId: null,
     selectedDates: new Set(),
   };
 
@@ -51,6 +52,7 @@ export function createReservationForm(root, { onClose } = {}) {
   const ticketSelectionSheet = root.querySelector('.ticket-selection-sheet');
   const ticketSheetTitle = root.querySelector('[data-field="ticket-sheet-title"]');
   const ticketOptions = root.querySelector('[data-field="ticket-options"]');
+  const confirmTicketButton = root.querySelector('[data-action="confirm-ticket-selection"]');
   const dateSection = root.querySelector('[data-field="date-section"]');
 
   notice.hidden = pets.length <= 1;
@@ -131,12 +133,14 @@ export function createReservationForm(root, { onClose } = {}) {
 
     if (!pet) return;
 
-    const selectedTicketId = state.selectedTicketIdsByPetId.get(pet.id);
+    const selectedTicketId = state.pendingTicketId;
     ticketSheetTitle.textContent = '이용권 선택';
+    confirmTicketButton.disabled = selectedTicketId === state.selectedTicketIdsByPetId.get(pet.id)
+      || !getAvailableSchoolTickets(pet).some((ticket) => ticket.id === selectedTicketId);
     ticketOptions.innerHTML = getAvailableSchoolTickets(pet).map((ticket) => {
       const isSelected = ticket.id === selectedTicketId;
       const remaining = getTicketReservableCount(ticket);
-      const validityLabel = getSchoolTicketValidityLabel(ticket).replace(/^만료일 : /, '유효기간 : ');
+      const validityLabel = getSchoolTicketValidityLabel(ticket).replace(/^(만료일|유효기간) : /, '기간 : ');
 
       return `
         <button class="ticket-selection-sheet__option${isSelected ? ' ticket-selection-sheet__option--selected' : ''}" type="button" data-action="select-ticket" data-ticket-id="${ticket.id}" aria-pressed="${isSelected}">
@@ -256,22 +260,34 @@ export function createReservationForm(root, { onClose } = {}) {
       }
 
       state.activeTicketPetId = petId;
+      state.pendingTicketId = state.selectedTicketIdsByPetId.get(petId);
       renderTicketOptions();
       ticketSelectionSheet.hidden = false;
       ticketSelectionSheet.dataset.state = 'visible';
     }
 
     if (actionTarget.dataset.action === 'close-ticket-selection') {
+      state.pendingTicketId = null;
       ticketSelectionSheet.hidden = true;
       ticketSelectionSheet.dataset.state = 'hidden';
     }
 
     if (actionTarget.dataset.action === 'select-ticket') {
-      const selectedTicketId = actionTarget.dataset.ticketId;
+      state.pendingTicketId = actionTarget.dataset.ticketId;
+      renderTicketOptions();
+    }
+
+    if (actionTarget.dataset.action === 'confirm-ticket-selection') {
+      const pet = pets.find((item) => item.id === state.activeTicketPetId);
+      const selectedTicketId = state.pendingTicketId;
+
+      if (!pet || !getAvailableSchoolTickets(pet).some((ticket) => ticket.id === selectedTicketId)) return;
+
       const previousTicketId = state.selectedTicketIdsByPetId.get(state.activeTicketPetId);
 
       state.selectedTicketIdsByPetId.set(state.activeTicketPetId, selectedTicketId);
       if (previousTicketId && previousTicketId !== selectedTicketId) state.selectedDates.clear();
+      state.pendingTicketId = null;
       render();
       ticketSelectionSheet.hidden = true;
       ticketSelectionSheet.dataset.state = 'hidden';

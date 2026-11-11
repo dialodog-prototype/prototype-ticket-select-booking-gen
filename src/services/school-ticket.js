@@ -162,6 +162,6 @@ export function getSchoolTicketRoundLabel(reservation, schoolReservationList, ti
 }
 
 export function getPetReservableCount(pet) {
-  return getSchoolTickets(pet)
+  return getAvailableSchoolTickets(pet)
     .reduce((total, ticket) => total + getTicketReservableCount(ticket), 0);
 }

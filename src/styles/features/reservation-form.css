@@ -221,6 +221,11 @@
   gap: 8px;
 }
 
+.ticket-selection-sheet__footer {
+  display: grid;
+  margin-top: 16px;
+}
+
 .ticket-selection-sheet__option {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr);
